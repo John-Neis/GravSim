@@ -95,7 +95,7 @@ void draw() {
   }
   
   
-  if(KEYS[32] && OG) {
+  if(KEYS[87] && OG) {
     y_spd = 100;
     OG = false;
   }
