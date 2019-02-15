@@ -5,6 +5,8 @@
 /* came up with. Thar ya filthy animal-JohnNeis*/
 /***********************************************/
 
+// Github available: https://github.com/John-Neis/GravSim.git //
+
 short y = 50; // y position
 short x = 95; // x position
 short w = 10; // width of block
