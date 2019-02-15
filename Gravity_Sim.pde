@@ -12,6 +12,7 @@ short h = 10; // height of block
 short y_spd = 0; 
 short x_spd = 0;
 boolean OG = false; // The nature of whether the ball is on the ground, abbr. OnGrnd or OG
+boolean[] KEYS;
 
 final short acc = -10; // Does the acceleration of earth ever change? No, so this is constant.
 
@@ -27,6 +28,7 @@ short calcYSpd(short spd, short acc) {
 }
 
 void setup() {
+ KEYS = new boolean[255];
  frameRate(30); 
  size(600, 600);
  background(0);
@@ -58,7 +60,7 @@ void draw() {
   }
   
   // The ground has friction, so the block needs to stop when on the ground, but not in air
-  if(x_spd < 0 && OG) {
+  /*if(x_spd < 0 && OG) {
     x += x_spd++;
   } else if (x_spd > 0 && OG) {
     x += x_spd--;
@@ -66,7 +68,9 @@ void draw() {
     x += x_spd;
   } else if (x_spd > 0 && !OG) {
     x += x_spd;
-  }
+  }*/
+  
+  x += x_spd;
   
   // Here is where the block splats on the ground
   if(y > height - 20) {
@@ -84,19 +88,38 @@ void draw() {
     x = (short)(width - 10);
     x_spd = 0;
   }
+  
+  if(!KEYS[65] && !KEYS[68] && OG) {
+    x_spd = 0;
+  }
+  else if(KEYS[68] && KEYS[65] && OG) {
+    x_spd = 0;
+  }
+  else if(KEYS[65] && !KEYS[68] && OG) {
+    x_spd = -10;
+  } 
+  else if(KEYS[68] && !KEYS[65] && OG) {
+    x_spd = 10;
+  }
+  
+  
+  if(KEYS[32] && OG) {
+    y_spd = 100;
+    OG = false;
+  }
 }
 
 void keyPressed() {
-  if(key == CODED) {
-    if(keyCode == UP && OG) {
-      y_spd = 100;
-      OG = false;
-    }
-    else if (keyCode == LEFT && OG) {
-      x_spd = -10;
-    }
-    else if (keyCode == RIGHT && OG) {
-      x_spd = 10;
-    }
-  }
+  if(key != CODED && keyCode < 255)
+    KEYS[keyCode] = true;
+    System.out.println("\"" + keyCode + "\" has been pressed");
+    System.out.println(KEYS[keyCode]);
+}
+
+void keyReleased() {
+  if(key != CODED && keyCode < 255) {
+    KEYS[keyCode] = false;
+    System.out.println("\"" + keyCode + "\" has been released");
+    System.out.println(KEYS[keyCode]);
+  } 
 }
