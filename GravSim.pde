@@ -2,7 +2,7 @@
 /* This was just a pure physics lesson here.   */
 /* I wanted to apply kinematics to my knowledge*/
 /* of graphics programming, and this is what I */
-/* came up with.                     -John Neis*/
+/* came up with. Thar ya filthy animal-JohnNeis*/
 /***********************************************/
 
 short y = 50; // y position
