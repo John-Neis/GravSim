@@ -7,13 +7,8 @@
 
 // Github available: https://github.com/John-Neis/GravSim.git //
 
-short y = 50; // y position
-short x = 95; // x position
-short w = 10; // width of block
-short h = 10; // height of block
-short y_spd = 0; 
-short x_spd = 0;
-boolean OG = false; // The nature of whether the ball is on the ground, abbr. OnGrnd or OG
+Player b = new Player();
+int imgLR = 0;
 boolean[] KEYS;
 
 final short acc = -10; // Does the acceleration of earth ever change? No, so this is constant.
@@ -31,6 +26,7 @@ short calcYSpd(short spd, short acc) {
 
 void setup() {
  KEYS = new boolean[255];
+ b.sprite = loadImage("sprite.png");
  frameRate(30); 
  size(600, 600);
  background(0);
@@ -41,11 +37,11 @@ void draw() {
   background(0);
   
   fill(0, 255, 0);                     
-  text("y = " + y, 10, 20);            //
-  text("x = " + x, 10, 30);            // Just some debugging stuff
-  text("y speed = " + y_spd, 10, 40);  // I thought was useful and 
-  text("x speed = " + x_spd, 10, 50);  // fun to look at.
-  text("On Ground: " + OG, 10, 60);    //
+  text("y = " + b.y, 10, 20);            //
+  text("x = " + b.x, 10, 30);            // Just some debugging stuff
+  text("y speed = " + b.y_spd, 10, 40);  // I thought was useful and 
+  text("x speed = " + b.x_spd, 10, 50);  // fun to look at.
+  text("On Ground: " + b.OG, 10, 60);    //
   
   //ground
   fill(0, 255, 0);
@@ -53,51 +49,59 @@ void draw() {
   
   // block
   fill(155, 0, 155);
-  rect(x, y, w, h);
+  if(imgLR == 0)
+    image(b.sprite, b.x, b.y);
+  else {
+    pushMatrix();
+    scale(-1.0, 1.0);
+    image(b.sprite, -b.x - b.w , b.y);
+    popMatrix();
+  }
   
   // Basically if the block is on the ground, I don't want to be changing its position vertically
-  if(!OG) {
-    y = calcYPos(y, y_spd, acc);
-    y_spd = calcYSpd(y_spd, acc);
-    x += x_spd;
+  if(!b.OG) {
+    b.y = calcYPos(b.y, b.y_spd, acc);
+    b.y_spd = calcYSpd(b.y_spd, acc);
+    b.x += b.x_spd;
   }
   
   // Here is where the block splats on the ground
-  if(y > height - 20) {
-    OG = true;
-    y = (short)(height - 20);
-    y_spd = 0;
+  if(b.y > height - 10 - b.h) {
+    b.OG = true;
+    b.y = (short)(height - 10 - b.h);
+    b.y_spd = 0;
   }
   
   // Horizontal border checking
-  if(x < 0) {
-    x = 0;
-    x_spd = 0;
+  if(b.x < 0) {
+    b.x = 0;
+    b.x_spd = 0;
   }
-  if(x > width - 10) {
-    x = (short)(width - 10);
-    x_spd = 0;
+  if(b.x > width - b.w) {
+    b.x = (short)(width - b.w);
+    b.x_spd = 0;
   }
   
-  if(!KEYS[65] && !KEYS[68] && OG) {
-    x_spd = 0;
+  if(!KEYS[65] && !KEYS[68] && b.OG) {
+    b.x_spd = 0;
   }
-  else if(KEYS[68] && KEYS[65] && OG) {
-    x_spd = 0;
+  else if(KEYS[68] && KEYS[65] && b.OG) {
+    b.x_spd = 0;
   }
-  else if(KEYS[65] && !KEYS[68] && OG) {
-    x_spd = -10;
-    x += x_spd;
+  else if(KEYS[65] && !KEYS[68] && b.OG && b.x > 0) {
+    b.x_spd = -10;
+    b.x += b.x_spd;
+    imgLR = 1;
   } 
-  else if(KEYS[68] && !KEYS[65] && OG) {
-    x_spd = 10;
-    x += x_spd;
+  else if(KEYS[68] && !KEYS[65] && b.OG && b.x < width - b.w) {
+    b.x_spd = 10;
+    b.x += b.x_spd;
+    imgLR = 0;
   }
   
-  
-  if(KEYS[87] && OG) {
-    y_spd = 100;
-    OG = false;
+  if(KEYS[87] && b.OG) {
+    b.y_spd = 75;
+    b.OG = false;
   }
 }
 
